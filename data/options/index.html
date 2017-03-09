@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Auto Shutdown :: Options</title>
+  </head>
+  <body>
+    <style>
+      table {
+        width: 100%;
+      }
+      input[type=number],
+      input[type=text],
+      select {
+        width: 100%;
+      }
+    </style>
+    <table>
+      <colgroup>
+        <col width="150"></col>
+        <col></col>
+      </colgroup>
+      <tr>
+        <td>Delay before command execution (in seconds)</td>
+        <td><input type="number" min="1" id="delay"></td>
+      </tr>
+      <tr>
+        <td>Command</td>
+        <td>
+          <select id="select"></select>
+          <br>
+          <input type="text" id="command">
+        </td>
+      </tr>
+      <tr>
+        <td>Disable active button on startup</td>
+        <td><input type="checkbox" id="reset"></td>
+      </tr>
+      <tr>
+        <td>Test native integration</td>
+        <td><input type="button" value="Open" id="test"></td>
+      </tr>
+    </table>
+    <div>
+      <input id="save" type="button" value="Save">
+      <span id="info"></span>
+    </div>
+    <script src="../../prefs.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
