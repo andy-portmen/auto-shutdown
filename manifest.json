@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "version": "0.1.0",
+  "version": "0.1.2",
   "name": "Auto Shutdown",
   "description": "Executes a system level command when all downloads are finished",
   "permissions": [
@@ -33,5 +33,11 @@
   "options_ui": {
     "page": "data/options/index.html",
     "chrome_style": true
+  },
+  "applications": {
+    "gecko": {
+      "id": "{9a71ec90-d0b6-44af-833f-efe418ff8454}",
+      "strict_min_version": "52.0"
+    }
   }
 }

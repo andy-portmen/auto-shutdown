@@ -4,7 +4,7 @@
 var delay, id;
 var prefs = defaultPrefs;
 
-function error (response) {
+function error(response) {
   window.alert(`Something went wrong!
 
 -----
@@ -13,7 +13,7 @@ Output: ${response.stdout}
 Error: ${response.stderr}`);
 }
 
-function response (res) {
+function response(res) {
   // windows batch returns 1
   if (res && (res.code !== 0 && (res.code !== 1 || res.stderr !== ''))) {
     error(res);
@@ -23,13 +23,16 @@ function response (res) {
       url: '/data/helper/index.html'
     });
   }
+  else if (prefs.exit) {
+    window.close();
+  }
 }
 
-function command () {
-  let cmd = prefs[prefs.active.os][prefs.active.name];
-  let parser = new Parser();
-  let termref = {
-    lineBuffer: cmd
+function command() {
+  const cmd = prefs[prefs.active.os][prefs.active.name];
+  const parser = new Parser();
+  const termref = {
+    lineBuffer: cmd.replace(/\\/g, '\\\\')
   };
   parser.parseLine(termref);
   chrome.runtime.sendNativeMessage('com.add0n.node', {
@@ -39,20 +42,41 @@ function command () {
   }, response);
 }
 
-function update () {
+function update() {
   delay -= 1;
   if (delay === 0) {
     window.clearInterval(id);
-    command();
+    // make sure there is no download job
+    chrome.downloads.search({
+      state: 'in_progress',
+      limit: 1
+    }, ds => {
+      if (ds.length === 0) {
+        command();
+      }
+      else {
+        window.close();
+      }
+    });
   }
   document.getElementById('number').textContent = ('0' + delay).substr(-2);
 }
 
 chrome.storage.local.get(prefs, p => {
-  prefs = p;
+  Object.assign(prefs, p);
   delay = prefs.delay;
   update();
   id = window.setInterval(update, 1000);
   document.getElementById('info-1').textContent = locale[prefs.active.os] + ' -> ' + locale[prefs.active.name];
   document.getElementById('info-2').textContent = prefs[prefs.active.os][prefs.active.name];
+});
+
+document.addEventListener('click', e => {
+  const cmd = e.target.dataset.cmd;
+  if (cmd === 'cancel') {
+    window.close();
+  }
+  else if (cmd === 'execute') {
+    delay = 2;
+  }
 });

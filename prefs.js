@@ -3,20 +3,21 @@
 var defaultPrefs = {
   delay: 30,
   reset: true,
+  exit: false,
   active: {
-    os: navigator.platform.indexOf('Windows') !== -1 ? 'windows' : (navigator.platform.indexOf('Mac') !== -1 ? 'darwin' : 'linux'),
+    os: navigator.platform.startsWith('Win') ? 'windows' : (navigator.platform.startsWith('Mac') ? 'darwin' : 'linux'),
     name: 'shutdown'
   },
   windows: {
     shutdown: 'shutdown /s /f /t 0',
     restart: 'shutdown /r /f /t 0',
-    suspend: 'CALL:PowrProf.dll SetSuspendState 0 1 0',
-    hibernate: 'CALL:PowrProf.dll SetSuspendState 1 1 0',
+    suspend: 'rundll32.exe powrprof.dll,SetSuspendState 0 1 0',
+    hibernate: 'rundll32.exe powrprof.dll,SetSuspendState 1 1 0',
     logout: 'shutdown /l /f'
   },
   linux: {
-    shutdown: 'dbus-send --system --print-reply --dest="org.freedesktop.login1" /org/freedesktop/login1 org.freedesktop.login1.Manager.PowerOff boolean:false',
-    restart: 'dbus-send --system --print-reply --dest="org.freedesktop.login1" /org/freedesktop/login1 org.freedesktop.login1.Manager.Reboot boolean:false',
+    shutdown: 'shutdown -h now',
+    restart: 'shutdown -r now',
     suspend: 'dbus-send --system --print-reply --dest="org.freedesktop.login1" /org/freedesktop/login1 org.freedesktop.login1.Manager.Suspend boolean:false',
     hibernate: 'dbus-send --system --print-reply --dest="org.freedesktop.login1" /org/freedesktop/login1 org.freedesktop.login1.Manager.Hibernate boolean:false'
   },

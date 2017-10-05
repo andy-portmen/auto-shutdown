@@ -5,18 +5,20 @@ var prefs = defaultPrefs;
 
 var select = document.getElementById('select');
 
-function restore () {
+function restore() {
   chrome.storage.local.get(prefs, p => {
-    prefs = p;
+    Object.assign(prefs, p);
+
     document.getElementById('delay').value = prefs.delay;
     document.getElementById('reset').checked = prefs.reset;
+    document.getElementById('exit').checked = prefs.exit;
     ['windows', 'linux', 'darwin'].forEach(os => {
-      let optgroup = document.createElement('optgroup');
+      const optgroup = document.createElement('optgroup');
       optgroup.label = locale[os];
       optgroup.value = os;
       select.appendChild(optgroup);
       Object.keys(prefs[os]).forEach(name => {
-        let option = document.createElement('option');
+        const option = document.createElement('option');
         option.value = prefs[os][name];
         option.dataset.os = os;
         option.dataset.name = name;
@@ -36,9 +38,10 @@ select.addEventListener('change', e => {
 });
 
 document.getElementById('save').addEventListener('click', () => {
-  prefs.delay = +document.getElementById('delay').value;
+  prefs.delay = Number(document.getElementById('delay').value);
   prefs.reset = document.getElementById('reset').checked;
-  let option = select.selectedOptions[0];
+  prefs.exit = document.getElementById('exit').checked;
+  const option = select.selectedOptions[0];
   prefs[option.dataset.os][option.dataset.name] = option.value =
     document.getElementById('command').value || option.value;
   prefs.active = {
@@ -46,7 +49,7 @@ document.getElementById('save').addEventListener('click', () => {
     name: option.dataset.name
   };
   chrome.storage.local.set(prefs, () => {
-    let info = document.getElementById('info');
+    const info = document.getElementById('info');
     info.textContent = 'Options saved';
     window.setTimeout(() => info.textContent = '', 750);
   });
