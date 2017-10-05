@@ -85,6 +85,12 @@ chrome.browserAction.onClicked.addListener(() => {
   });
 });
 
+chrome.runtime.onMessage.addListener((request, sender) => {
+  if (request.method === 'close-me') {
+    chrome.tabs.remove(sender.tab.id);
+  }
+});
+
 // FAQs & Feedback
 chrome.storage.local.get({
   'version': null,

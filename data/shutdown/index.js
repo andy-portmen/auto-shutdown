@@ -24,7 +24,9 @@ function response(res) {
     });
   }
   else if (prefs.exit) {
-    window.close();
+    chrome.runtime.sendMessage({
+      method: 'close-me'
+    });
   }
 }
 
