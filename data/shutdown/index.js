@@ -1,8 +1,12 @@
 /* globals Parser, defaultPrefs, locale */
 'use strict';
 
-var delay, id;
+var delay;
+var id;
 var prefs = defaultPrefs;
+chrome.runtime.connect({
+  name: 'me'
+});
 
 function error(response) {
   window.alert(`Something went wrong!
@@ -34,13 +38,13 @@ function command() {
   const cmd = prefs[prefs.active.os][prefs.active.name];
   const parser = new Parser();
   const termref = {
-    lineBuffer: cmd.replace(/\\/g, '\\\\')
+    lineBuffer: cmd
   };
   parser.parseLine(termref);
   chrome.runtime.sendNativeMessage('com.add0n.node', {
     cmd: 'exec',
     command: termref.argv[0],
-    arguments: termref.argv.slice(1),
+    arguments: termref.argv.slice(1)
   }, response);
 }
 
@@ -82,3 +86,9 @@ document.addEventListener('click', e => {
     delay = 2;
   }
 });
+
+window.addEventListener('blur', () => delay !== 0 && chrome.storage.local.get({
+  'focus': true
+}, prefs => prefs.focus && chrome.runtime.sendMessage({
+  method: 'focus-me'
+})));

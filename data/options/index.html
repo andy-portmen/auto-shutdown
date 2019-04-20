@@ -6,6 +6,9 @@
   </head>
   <body>
     <style>
+      body {
+        min-width: 500px;
+      }
       table {
         width: 100%;
       }
@@ -17,14 +20,17 @@
     </style>
     <table>
       <colgroup>
+        <col width="24"></col>
         <col width="150"></col>
         <col></col>
       </colgroup>
       <tr>
+        <td></td>
         <td>Delay before command execution (in seconds)</td>
         <td><input type="number" min="1" id="delay"></td>
       </tr>
       <tr>
+        <td></td>
         <td>Command</td>
         <td>
           <select id="select"></select>
@@ -33,23 +39,36 @@
         </td>
       </tr>
       <tr>
-        <td>Disable active button on startup</td>
         <td><input type="checkbox" id="reset"></td>
+        <td colspan="2"><label for="reset">Disable active button on startup</label></td>
       </tr>
       <tr>
-        <td>Close shutdown window when command is executed</td>
         <td><input type="checkbox" id="exit"></td>
+        <td colspan="2"><label for="exit">Close shutdown window when command is executed</label></td>
       </tr>
       <tr>
+        <td><input type="checkbox" id="focus"></td>
+        <td colspan="2"><label for="focus">Keep shutdown window on top when counting</label></td>
+      </tr>
+      <tr>
+        <td></td>
         <td>Test native integration</td>
         <td><input type="button" value="Open" id="test"></td>
       </tr>
+      <tr>
+        <td></td>
+        <td>Open shutdown counter</td>
+        <td><input type="button" value="Open" id="perform"></td>
+      </tr>
     </table>
-    <div>
-      <input id="save" type="button" value="Save">
+    <div id="explore"></div>
+    <p>
+      <input id="factroy" type="button" value="Factory Reset">
+      <input id="support" type="button" value="Support Development"> - <input id="save" type="button" value="Save">
       <span id="info"></span>
-    </div>
+    </p>
     <script src="../../prefs.js"></script>
     <script src="index.js"></script>
+    <script async src="matched.js"></script>
   </body>
 </html>

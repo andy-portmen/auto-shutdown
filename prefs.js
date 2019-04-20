@@ -4,6 +4,7 @@ var defaultPrefs = {
   delay: 30,
   reset: true,
   exit: false,
+  focus: true,
   active: {
     os: navigator.platform.startsWith('Win') ? 'windows' : (navigator.platform.startsWith('Mac') ? 'darwin' : 'linux'),
     name: 'shutdown'
