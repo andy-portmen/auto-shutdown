@@ -86,6 +86,8 @@ document.addEventListener('click', e => {
     delay = 2;
   }
 });
+document.addEventListener('keyup', e => e.code === 'Escape' && window.close());
+
 
 window.addEventListener('blur', () => delay !== 0 && chrome.storage.local.get({
   'focus': true

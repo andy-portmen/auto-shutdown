@@ -1,6 +1,6 @@
 'use strict';
 
-var ports = [];
+const ports = [];
 chrome.runtime.onConnect.addListener(port => {
   ports.push(port);
   port.onDisconnect.addListener(() => {
@@ -11,7 +11,7 @@ chrome.runtime.onConnect.addListener(port => {
   });
 });
 
-var shutdown = {
+const shutdown = {
   busy: false,
   action: () => ports.length === 0 ? chrome.windows.getCurrent(win => {
     chrome.storage.local.get({
@@ -32,7 +32,26 @@ var shutdown = {
   }) : chrome.windows.update(ports[0].sender.tab.windowId, {
     focused: true
   }),
-  observe: () => {
+  keepawake(bol) {
+    if (chrome.power && chrome.power.requestKeepAwake) {
+      if (bol) {
+        chrome.storage.local.get({
+          keepawake: true,
+          awakemethod: 'system'
+        }, prefs => {
+          if (prefs.keepawake) {
+            chrome.power.requestKeepAwake(prefs.awakemethod);
+            console.log('keep awake is enabled');
+          }
+        });
+      }
+      else {
+        chrome.power.releaseKeepAwake();
+        console.log('keep awake is disabled');
+      }
+    }
+  },
+  observe() {
     if (shutdown.busy) {
       return;
     }
@@ -42,12 +61,13 @@ var shutdown = {
       limit: 1
     }, ds => {
       shutdown.busy = false;
+      shutdown.keepawake(ds.length !== 0);
       if (ds.length === 0) {
         shutdown.action();
       }
     });
   },
-  enable: () => {
+  enable() {
     chrome.downloads.onChanged.removeListener(shutdown.observe);
     chrome.downloads.onChanged.addListener(shutdown.observe);
     chrome.browserAction.setIcon({
@@ -60,7 +80,7 @@ var shutdown = {
       title: 'Auto Shutdown (enabled)'
     });
   },
-  disable: () => {
+  disable() {
     chrome.downloads.onChanged.removeListener(shutdown.observe);
     chrome.browserAction.setIcon({
       path: {

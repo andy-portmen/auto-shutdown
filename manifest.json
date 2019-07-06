@@ -5,10 +5,9 @@
   "description": "Executes a system level command when all downloads are finished",
   "permissions": [
     "storage",
-    "tabs",
     "nativeMessaging",
     "downloads",
-    "https://api.github.com/repos/andy-portmen/native-client/releases/latest"
+    "power"
   ],
   "background": {
     "scripts":[
@@ -44,7 +43,7 @@
   "applications": {
     "gecko": {
       "id": "{9a71ec90-d0b6-44af-833f-efe418ff8454}",
-      "strict_min_version": "52.0"
+      "strict_min_version": "57.0"
     }
   }
 }

@@ -1,10 +1,10 @@
 /* globals defaultPrefs, locale */
 'use strict';
 
-var prefs = defaultPrefs;
-var info = document.getElementById('info');
+const prefs = defaultPrefs;
+const info = document.getElementById('info');
 
-var select = document.getElementById('select');
+const select = document.getElementById('select');
 
 function restore() {
   chrome.storage.local.get(prefs, p => {
@@ -14,6 +14,7 @@ function restore() {
     document.getElementById('reset').checked = prefs.reset;
     document.getElementById('exit').checked = prefs.exit;
     document.getElementById('focus').checked = prefs.focus;
+    document.getElementById('keepawake').checked = prefs.keepawake;
     ['windows', 'linux', 'darwin'].forEach(os => {
       const optgroup = document.createElement('optgroup');
       optgroup.label = locale[os];
@@ -44,6 +45,7 @@ document.getElementById('save').addEventListener('click', () => {
   prefs.reset = document.getElementById('reset').checked;
   prefs.exit = document.getElementById('exit').checked;
   prefs.focus = document.getElementById('focus').checked;
+  prefs.keepawake = document.getElementById('keepawake').checked;
   const option = select.selectedOptions[0];
   prefs[option.dataset.os][option.dataset.name] = option.value =
     document.getElementById('command').value || option.value;

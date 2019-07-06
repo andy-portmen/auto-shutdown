@@ -5,6 +5,7 @@ var defaultPrefs = {
   reset: true,
   exit: false,
   focus: true,
+  keepawake: Boolean(chrome.power && chrome.power.requestKeepAwake),
   active: {
     os: navigator.platform.startsWith('Win') ? 'windows' : (navigator.platform.startsWith('Mac') ? 'darwin' : 'linux'),
     name: 'shutdown'
