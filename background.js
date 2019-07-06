@@ -41,13 +41,11 @@ const shutdown = {
         }, prefs => {
           if (prefs.keepawake) {
             chrome.power.requestKeepAwake(prefs.awakemethod);
-            console.log('keep awake is enabled');
           }
         });
       }
       else {
         chrome.power.releaseKeepAwake();
-        console.log('keep awake is disabled');
       }
     }
   },

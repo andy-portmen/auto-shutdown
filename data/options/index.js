@@ -15,6 +15,14 @@ function restore() {
     document.getElementById('exit').checked = prefs.exit;
     document.getElementById('focus').checked = prefs.focus;
     document.getElementById('keepawake').checked = prefs.keepawake;
+
+    if (!chrome.power || !chrome.power.requestKeepAwake) {
+      document.getElementById('keepawake-parent').style = `
+        opacity: 0.5;
+        pointer-events: none;
+      `;
+    }
+
     ['windows', 'linux', 'darwin'].forEach(os => {
       const optgroup = document.createElement('optgroup');
       optgroup.label = locale[os];
