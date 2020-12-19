@@ -1,9 +1,9 @@
 /* globals Parser, defaultPrefs, locale */
 'use strict';
 
-var delay;
-var id;
-var prefs = defaultPrefs;
+let delay;
+let id;
+const prefs = defaultPrefs;
 chrome.runtime.connect({
   name: 'me'
 });
@@ -91,6 +91,11 @@ document.addEventListener('keyup', e => e.code === 'Escape' && window.close());
 
 window.addEventListener('blur', () => delay !== 0 && chrome.storage.local.get({
   'focus': true
-}, prefs => prefs.focus && chrome.runtime.sendMessage({
-  method: 'focus-me'
-})));
+}, prefs => {
+  console.log(prefs);
+  if (prefs.focus) {
+    chrome.runtime.sendMessage({
+      method: 'focus-me'
+    });
+  }
+}));

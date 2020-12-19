@@ -1,6 +1,6 @@
 'use strict';
 
-var defaultPrefs = {
+const defaultPrefs = {
   delay: 30,
   reset: true,
   exit: false,
@@ -10,6 +10,7 @@ var defaultPrefs = {
     os: navigator.platform.startsWith('Win') ? 'windows' : (navigator.platform.startsWith('Mac') ? 'darwin' : 'linux'),
     name: 'shutdown'
   },
+  tokens: [],
   windows: {
     shutdown: 'shutdown /s /f /t 0',
     restart: 'shutdown /r /f /t 0',
@@ -29,7 +30,7 @@ var defaultPrefs = {
     suspend: 'osascript -e "tell application \\"System Events\\" to sleep"'
   }
 };
-var locale = {
+const locale = {
   windows: 'Windows XP/Vista/7/8/10',
   linux: 'GNU/Linux (systemd)',
   darwin: 'Mac OS X',

@@ -71,7 +71,10 @@ const shutdown = {
     chrome.browserAction.setIcon({
       path: {
         '16': 'data/icons/16.png',
-        '32': 'data/icons/32.png'
+        '19': 'data/icons/19.png',
+        '32': 'data/icons/32.png',
+        '38': 'data/icons/38.png',
+        '48': 'data/icons/48.png'
       }
     });
     chrome.browserAction.setTitle({
@@ -83,7 +86,10 @@ const shutdown = {
     chrome.browserAction.setIcon({
       path: {
         '16': 'data/icons/disabled/16.png',
-        '32': 'data/icons/disabled/32.png'
+        '19': 'data/icons/disabled/19.png',
+        '32': 'data/icons/disabled/32.png',
+        '38': 'data/icons/disabled/38.png',
+        '48': 'data/icons/disabled/48.png'
       }
     });
     chrome.browserAction.setTitle({
@@ -91,6 +97,7 @@ const shutdown = {
     });
   }
 };
+window.shutdown = shutdown;
 
 chrome.storage.local.get({
   enabled: false,
@@ -102,9 +109,7 @@ chrome.storage.local.get({
     });
     prefs.enabled = false;
   }
-  if (prefs.enabled) {
-    shutdown.enable();
-  }
+  shutdown[prefs.enabled ? 'enable' : 'disable']();
 });
 
 chrome.storage.onChanged.addListener(prefs => {
@@ -131,29 +136,36 @@ chrome.runtime.onMessage.addListener((request, sender) => {
   }
 });
 
-// FAQs & Feedback
+chrome.runtime.onMessageExternal.addListener(request => {
+  if (request.method === 'shutdown') {
+    shutdown.action();
+  }
+});
+
+/* FAQs & Feedback */
 {
-  const {onInstalled, setUninstallURL, getManifest} = chrome.runtime;
-  const {name, version} = getManifest();
-  const page = getManifest().homepage_url;
-  onInstalled.addListener(({reason, previousVersion}) => {
-    chrome.storage.local.get({
-      'faqs': true,
-      'last-update': 0
-    }, prefs => {
-      if (reason === 'install' || (prefs.faqs && reason === 'update')) {
-        const doUpdate = (Date.now() - prefs['last-update']) / 1000 / 60 / 60 / 24 > 45;
-        if (doUpdate && previousVersion !== version) {
-          chrome.tabs.create({
-            url: page + '?version=' + version +
-              (previousVersion ? '&p=' + previousVersion : '') +
-              '&type=' + reason,
-            active: reason === 'install'
-          });
-          chrome.storage.local.set({'last-update': Date.now()});
+  const {management, runtime: {onInstalled, setUninstallURL, getManifest}, storage, tabs} = chrome;
+  if (navigator.webdriver !== true) {
+    const page = getManifest().homepage_url;
+    const {name, version} = getManifest();
+    onInstalled.addListener(({reason, previousVersion}) => {
+      management.getSelf(({installType}) => installType === 'normal' && storage.local.get({
+        'faqs': true,
+        'last-update': 0
+      }, prefs => {
+        if (reason === 'install' || (prefs.faqs && reason === 'update')) {
+          const doUpdate = (Date.now() - prefs['last-update']) / 1000 / 60 / 60 / 24 > 45;
+          if (doUpdate && previousVersion !== version) {
+            tabs.create({
+              url: page + '?version=' + version + (previousVersion ? '&p=' + previousVersion : '') + '&type=' + reason,
+              active: reason === 'install'
+            });
+            storage.local.set({'last-update': Date.now()});
+          }
         }
-      }
+      }));
     });
-  });
-  setUninstallURL(page + '?rd=feedback&name=' + encodeURIComponent(name) + '&version=' + version);
+    setUninstallURL(page + '?rd=feedback&name=' + encodeURIComponent(name) + '&version=' + version);
+  }
 }
+

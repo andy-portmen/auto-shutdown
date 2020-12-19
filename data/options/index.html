@@ -2,42 +2,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Auto Shutdown :: Options</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <title>Auto Shutdown :: Options Page</title>
   </head>
   <body>
-    <style>
-      body {
-        min-width: 500px;
-      }
-      table {
-        width: 100%;
-      }
-      input[type=number],
-      input[type=text],
-      select {
-        width: 100%;
-      }
-    </style>
+    <div class="grid">
+      <span>Execution Delay</span>
+      <input type="number" min="1" id="delay">
+      <span class="note">Delay before the command execution (in seconds)</span>
+      <span>Command</span>
+      <div>
+        <select id="select"></select>
+        <input type="text" id="command">
+      </div>
+    </div>
+
     <table>
       <colgroup>
         <col width="24"></col>
         <col width="150"></col>
         <col></col>
       </colgroup>
-      <tr>
-        <td></td>
-        <td>Delay before command execution (in seconds)</td>
-        <td><input type="number" min="1" id="delay"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td>Command</td>
-        <td>
-          <select id="select"></select>
-          <br>
-          <input type="text" id="command">
-        </td>
-      </tr>
       <tr>
         <td><input type="checkbox" id="reset"></td>
         <td colspan="2"><label for="reset">Disable active button on startup</label></td>
@@ -54,18 +39,15 @@
         <td><input type="checkbox" id="keepawake"></td>
         <td colspan="2"><label for="keepawake">Keep the system awake (prevent hibernation) when the toolbar is active and there are ongoing downloading jobs (if API is supported)</label></td>
       </tr>
-      <tr>
-        <td></td>
-        <td>Test native integration</td>
-        <td><input type="button" value="Open" id="test"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td>Open shutdown counter</td>
-        <td><input type="button" value="Open" id="perform"></td>
-      </tr>
     </table>
-    <div id="explore"></div>
+
+    <p class="grid-2">
+      <span>Test native integration</span>
+      <input type="button" value="Open" id="test">
+      <span>Open shutdown counter</span>
+      <input type="button" value="Open" id="perform">
+    </p>
+
     <p>
       <input id="factroy" type="button" value="Factory Reset">
       <input id="support" type="button" value="Support Development"> - <input id="save" type="button" value="Save">
@@ -73,6 +55,5 @@
     </p>
     <script src="../../prefs.js"></script>
     <script src="index.js"></script>
-    <script async src="matched.js"></script>
   </body>
 </html>

@@ -1,9 +1,8 @@
 {
   "manifest_version": 2,
-  "version": "0.1.5
-  ",
+  "version": "0.1.8",
   "name": "Auto Shutdown",
-  "description": "Executes a system level command when all downloads are finished",
+  "description": "Executes a system-level command to shut down, hibernate or standby your operating system when all downloads are finished",
   "permissions": [
     "storage",
     "nativeMessaging",
@@ -26,25 +25,10 @@
     "256": "data/icons/256.png",
     "512": "data/icons/512.png"
   },
-  "browser_action": {
-    "default_icon": {
-      "16": "data/icons/disabled/16.png",
-      "19": "data/icons/disabled/19.png",
-      "32": "data/icons/disabled/32.png",
-      "38": "data/icons/disabled/38.png",
-      "48": "data/icons/disabled/48.png",
-      "64": "data/icons/disabled/64.png"
-    }
-  },
-  "homepage_url": "http://add0n.com/auto-shutdown.html",
+  "browser_action": {},
+  "homepage_url": "https://add0n.com/auto-shutdown.html",
   "options_ui": {
     "page": "data/options/index.html",
     "chrome_style": true
-  },
-  "applications": {
-    "gecko": {
-      "id": "{9a71ec90-d0b6-44af-833f-efe418ff8454}",
-      "strict_min_version": "57.0"
-    }
   }
 }

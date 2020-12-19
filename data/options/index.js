@@ -54,6 +54,7 @@ document.getElementById('save').addEventListener('click', () => {
   prefs.exit = document.getElementById('exit').checked;
   prefs.focus = document.getElementById('focus').checked;
   prefs.keepawake = document.getElementById('keepawake').checked;
+
   const option = select.selectedOptions[0];
   prefs[option.dataset.os][option.dataset.name] = option.value =
     document.getElementById('command').value || option.value;

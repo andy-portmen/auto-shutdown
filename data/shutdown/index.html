@@ -2,68 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Shutdown is in progress!</title>
-    <style>
-      html {
-        height: 100%;
-      }
-      body {
-        font-family: "Helvetica Neue",Helvetica,sans-serif;
-        font-size: 13px;
-        display: flex;
-        flex-direction: column;
-        margin: 0;
-        height: 100%;
-      }
-      a {
-        margin-left: 5px;
-      }
-      table {
-        width: 100%;
-      }
-      td {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      #timer {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      #toolbar {
-        display: flex;
-        flex-direction: row;
-      }
-      #toolbar div {
-        padding: 10px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      #number {
-        font-size: 20vh;
-        border: solid 5px red;
-        border-radius: 50%;
-        width: 50vh;
-        height: 50vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-      }
-      #number::after {
-        content: 'seconds';
-        font-size: 12px;
-        position: absolute;
-        right: -30px;
-        top: 0;
-      }
-      #ss {
-        margin-top: 20vh;
-      }
-    </style>
+    <title>Shutdown in Progress!</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
   </head>
   <body>
     <div id="info"></div>
@@ -71,17 +11,12 @@
       <span id="number">--</span>
     </div>
     <div id="toolbar">
-      <div>
-        From<br>Command
-      </div>
-      <div style="flex: 1;">
-        <span id="info-1">windows -> shutdown</span>
-        <br>
-        <span id="info-2">shutdown /s /f /t 0</span>
-      </div>
-      <div>
-        <a href="#" data-cmd="execute">Execute</a><br><a href="#" data-cmd="cancel">Cancel</a>
-      </div>
+      <span>From</span>
+      <span id="info-1">windows -> shutdown</span>
+      <input type="button" data-cmd="execute" value="Execute">
+      <span>Command</span>
+      <span id="info-2">shutdown /s /f /t 0</span>
+      <input type="button" data-cmd="cancel" value="Abort">
     </div>
     <script src="termlib_parser.js"></script>
     <script src="../../prefs.js"></script>
