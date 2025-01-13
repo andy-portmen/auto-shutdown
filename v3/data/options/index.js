@@ -93,6 +93,6 @@ document.getElementById('support').addEventListener('click', () => chrome.tabs.c
   url: chrome.runtime.getManifest().homepage_url + '?rd=donate'
 }));
 // perform
-document.getElementById('perform').addEventListener('click', () => chrome.runtime.getBackgroundPage(bg => {
-  bg.shutdown.action();
+document.getElementById('perform').addEventListener('click', () => chrome.runtime.sendMessage({
+  method: 'action'
 }));

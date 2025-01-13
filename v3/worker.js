@@ -1,37 +1,33 @@
 'use strict';
 
-const ports = [];
-chrome.runtime.onConnect.addListener(port => {
-  ports.push(port);
-  port.onDisconnect.addListener(() => {
-    const index = ports.indexOf(port);
-    if (index !== -1) {
-      ports.splice(index, 1);
-    }
-  });
-});
-
 const shutdown = {
   busy: false,
-  action: () => ports.length === 0 ? chrome.windows.getCurrent(win => {
-    chrome.storage.local.get({
-      width: 500,
-      height: 350,
-      left: win.left + Math.round((win.width - 500) / 2),
-      top: win.top + Math.round((win.height - 350) / 2)
-    }, prefs => {
-      chrome.windows.create({
-        url: chrome.extension.getURL('data/shutdown/index.html'),
-        type: 'panel',
-        left: prefs.left,
-        top: prefs.top,
-        width: Math.max(prefs.width, 200),
-        height: Math.max(prefs.height, 200)
-      });
+  action() {
+    chrome.runtime.sendMessage({
+      method: 'exists'
+    }, a => {
+      chrome.runtime.lastError;
+      if (a !== true) {
+        chrome.windows.getCurrent(win => {
+          chrome.storage.local.get({
+            width: 500,
+            height: 350,
+            left: win.left + Math.round((win.width - 500) / 2),
+            top: win.top + Math.round((win.height - 350) / 2)
+          }, prefs => {
+            chrome.windows.create({
+              url: '/data/shutdown/index.html',
+              type: 'panel',
+              left: prefs.left,
+              top: prefs.top,
+              width: Math.max(prefs.width, 200),
+              height: Math.max(prefs.height, 200)
+            });
+          });
+        });
+      }
     });
-  }) : chrome.windows.update(ports[0].sender.tab.windowId, {
-    focused: true
-  }),
+  },
   keepawake(bol) {
     if (chrome.power && chrome.power.requestKeepAwake) {
       if (bol) {
@@ -68,49 +64,63 @@ const shutdown = {
   enable() {
     chrome.downloads.onChanged.removeListener(shutdown.observe);
     chrome.downloads.onChanged.addListener(shutdown.observe);
-    chrome.browserAction.setIcon({
+
+    chrome.action.setIcon({
       path: {
-        '16': 'data/icons/16.png',
-        '19': 'data/icons/19.png',
-        '32': 'data/icons/32.png',
-        '38': 'data/icons/38.png',
-        '48': 'data/icons/48.png'
+        '16': '/data/icons/16.png',
+        '32': '/data/icons/32.png',
+        '48': '/data/icons/48.png'
       }
     });
-    chrome.browserAction.setTitle({
+    chrome.action.setTitle({
       title: 'Auto Shutdown (enabled)'
     });
   },
   disable() {
     chrome.downloads.onChanged.removeListener(shutdown.observe);
-    chrome.browserAction.setIcon({
+    chrome.action.setIcon({
       path: {
-        '16': 'data/icons/disabled/16.png',
-        '19': 'data/icons/disabled/19.png',
-        '32': 'data/icons/disabled/32.png',
-        '38': 'data/icons/disabled/38.png',
-        '48': 'data/icons/disabled/48.png'
+        '16': '/data/icons/disabled/16.png',
+        '32': '/data/icons/disabled/32.png',
+        '48': '/data/icons/disabled/48.png'
       }
     });
-    chrome.browserAction.setTitle({
+    chrome.action.setTitle({
       title: 'Auto Shutdown (disabled)'
     });
   }
 };
-window.shutdown = shutdown;
 
+// runs when bg is active to register listeners
 chrome.storage.local.get({
-  enabled: false,
-  reset: true
+  enabled: false
 }, prefs => {
-  if (prefs.reset && prefs.enabled) {
-    chrome.storage.local.set({
-      enabled: false
-    });
-    prefs.enabled = false;
-  }
   shutdown[prefs.enabled ? 'enable' : 'disable']();
 });
+
+// startup
+{
+  const once = () => {
+    if (once.done) {
+      return;
+    }
+    once.done = true;
+
+    chrome.storage.local.get({
+      enabled: false,
+      reset: true
+    }, prefs => {
+      if (prefs.reset && prefs.enabled) {
+        chrome.storage.local.set({
+          enabled: false
+        });
+        prefs.enabled = false;
+      }
+    });
+  };
+  chrome.runtime.onStartup.addListener(once);
+  chrome.runtime.onInstalled.addListener(once);
+}
 
 chrome.storage.onChanged.addListener(prefs => {
   if (prefs.enabled) {
@@ -118,7 +128,7 @@ chrome.storage.onChanged.addListener(prefs => {
   }
 });
 
-chrome.browserAction.onClicked.addListener(() => chrome.storage.local.get({
+chrome.action.onClicked.addListener(() => chrome.storage.local.get({
   enabled: false
 }, prefs => {
   prefs.enabled = !prefs.enabled;
@@ -134,6 +144,9 @@ chrome.runtime.onMessage.addListener((request, sender) => {
       focused: true
     });
   }
+  else if (request.method === 'action') {
+    shutdown.action();
+  }
 });
 
 chrome.runtime.onMessageExternal.addListener(request => {
@@ -146,8 +159,7 @@ chrome.runtime.onMessageExternal.addListener(request => {
 {
   const {management, runtime: {onInstalled, setUninstallURL, getManifest}, storage, tabs} = chrome;
   if (navigator.webdriver !== true) {
-    const page = getManifest().homepage_url;
-    const {name, version} = getManifest();
+    const {homepage_url: page, name, version} = getManifest();
     onInstalled.addListener(({reason, previousVersion}) => {
       management.getSelf(({installType}) => installType === 'normal' && storage.local.get({
         'faqs': true,
@@ -156,10 +168,11 @@ chrome.runtime.onMessageExternal.addListener(request => {
         if (reason === 'install' || (prefs.faqs && reason === 'update')) {
           const doUpdate = (Date.now() - prefs['last-update']) / 1000 / 60 / 60 / 24 > 45;
           if (doUpdate && previousVersion !== version) {
-            tabs.create({
+            tabs.query({active: true, lastFocusedWindow: true}, tbs => tabs.create({
               url: page + '?version=' + version + (previousVersion ? '&p=' + previousVersion : '') + '&type=' + reason,
-              active: reason === 'install'
-            });
+              active: reason === 'install',
+              ...(tbs && tbs.length && {index: tbs[0].index + 1})
+            }));
             storage.local.set({'last-update': Date.now()});
           }
         }
@@ -168,4 +181,3 @@ chrome.runtime.onMessageExternal.addListener(request => {
     setUninstallURL(page + '?rd=feedback&name=' + encodeURIComponent(name) + '&version=' + version);
   }
 }
-

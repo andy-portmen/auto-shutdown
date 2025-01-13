@@ -1,15 +1,12 @@
-/* globals Parser, defaultPrefs, locale */
+/* global Parser, defaultPrefs, locale */
 'use strict';
 
 let delay;
 let id;
 const prefs = defaultPrefs;
-chrome.runtime.connect({
-  name: 'me'
-});
 
 function error(response) {
-  window.alert(`Something went wrong!
+  alert(`Something went wrong!
 
 -----
 Code: ${response.code}
@@ -51,7 +48,7 @@ function command() {
 function update() {
   delay -= 1;
   if (delay === 0) {
-    window.clearInterval(id);
+    clearInterval(id);
     // make sure there is no download job
     chrome.downloads.search({
       state: 'in_progress',
@@ -72,7 +69,7 @@ chrome.storage.local.get(prefs, p => {
   Object.assign(prefs, p);
   delay = prefs.delay;
   update();
-  id = window.setInterval(update, 1000);
+  id = setInterval(update, 1000);
   document.getElementById('info-1').textContent = locale[prefs.active.os] + ' -> ' + locale[prefs.active.name];
   document.getElementById('info-2').textContent = prefs[prefs.active.os][prefs.active.name];
 });
@@ -89,13 +86,21 @@ document.addEventListener('click', e => {
 document.addEventListener('keyup', e => e.code === 'Escape' && window.close());
 
 
-window.addEventListener('blur', () => delay !== 0 && chrome.storage.local.get({
+addEventListener('blur', () => delay !== 0 && chrome.storage.local.get({
   'focus': true
 }, prefs => {
-  console.log(prefs);
   if (prefs.focus) {
     chrome.runtime.sendMessage({
       method: 'focus-me'
     });
   }
 }));
+
+chrome.runtime.onMessage.addListener((request, sender, response) => {
+  if (request.method === 'exists') {
+    response(true);
+    chrome.runtime.sendMessage({
+      method: 'focus-me'
+    });
+  }
+});
