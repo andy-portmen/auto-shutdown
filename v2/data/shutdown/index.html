@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Shutdown in Progress!</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+  </head>
+  <body>
+    <div id="info"></div>
+    <div id="timer">
+      <span id="number">--</span>
+    </div>
+    <div id="toolbar">
+      <span>From</span>
+      <span id="info-1">windows -> shutdown</span>
+      <input type="button" data-cmd="execute" value="Execute">
+      <span>Command</span>
+      <span id="info-2">shutdown /s /f /t 0</span>
+      <input type="button" data-cmd="cancel" value="Abort">
+    </div>
+    <script src="termlib_parser.js"></script>
+    <script src="../../prefs.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <title>Auto Shutdown :: Options Page</title>
+  </head>
+  <body>
+    <div class="grid">
+      <span>Execution Delay</span>
+      <input type="number" min="1" id="delay">
+      <span class="note">Delay before the command execution (in seconds)</span>
+      <span>Command</span>
+      <div>
+        <select id="select"></select>
+        <input type="text" id="command">
+      </div>
+    </div>
+
+    <table>
+      <colgroup>
+        <col width="24"></col>
+        <col width="150"></col>
+        <col></col>
+      </colgroup>
+      <tr>
+        <td><input type="checkbox" id="reset"></td>
+        <td colspan="2"><label for="reset">Disable active button on startup</label></td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" id="exit"></td>
+        <td colspan="2"><label for="exit">Close shutdown window when command is executed</label></td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" id="focus"></td>
+        <td colspan="2"><label for="focus">Keep shutdown window on top when counting</label></td>
+      </tr>
+      <tr id="keepawake-parent">
+        <td><input type="checkbox" id="keepawake"></td>
+        <td colspan="2"><label for="keepawake">Keep the system awake (prevent hibernation) when the toolbar is active and there are ongoing downloading jobs (if API is supported)</label></td>
+      </tr>
+    </table>
+
+    <p class="grid-2">
+      <span>Test native integration</span>
+      <input type="button" value="Open" id="test">
+      <span>Open shutdown counter</span>
+      <input type="button" value="Open" id="perform">
+    </p>
+
+    <p>
+      <input id="factroy" type="button" value="Factory Reset">
+      <input id="support" type="button" value="Support Development"> - <input id="save" type="button" value="Save">
+      <span id="info"></span>
+    </p>
+    <script src="../../prefs.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
